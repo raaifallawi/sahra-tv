@@ -4,53 +4,54 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>Sahra TV</title>
-<meta name="theme-color" content="#0a0a0c" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" />
-<link rel="stylesheet" href="./styles.css" />
+<meta name="theme-color" content="#000000" />
+<meta name="description" content="Sahra TV — movies and shows, your watchlist, and watch parties inside Telegram." />
+<link rel="preconnect" href="https://image.tmdb.org" />
+<link rel="preconnect" href="https://api.themoviedb.org" />
+<link rel="stylesheet" href="./styles.css?v=2" />
 <!-- Telegram Mini App SDK (must be from telegram.org per platform rules) -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <!-- Supabase JS (CDN) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <!-- Top bar -->
-  <header class="topbar">
-    <div class="brand">
+  <!-- Top navigation -->
+  <header class="topnav" id="topnav">
+    <a class="brand" href="#" id="brandLink">
       <span class="brand-mark">★</span>
-      <span class="brand-name" data-i18n="brand">Sahra TV</span>
-    </div>
+      <span data-i18n="brand">Sahra TV</span>
+    </a>
+    <nav class="nav-links" role="tablist" id="navTabs">
+      <button class="nav-link active" data-view="discover" data-i18n="tab_discover">Home</button>
+      <button class="nav-link" data-view="movies" data-i18n="tab_movies">Movies</button>
+      <button class="nav-link" data-view="tv" data-i18n="tab_tv">Shows</button>
+      <button class="nav-link" data-view="continue" data-i18n="tab_continue">Continue</button>
+      <button class="nav-link" data-view="watchlist" data-i18n="tab_watchlist">Watchlist</button>
+      <button class="nav-link" data-view="parties" data-i18n="tab_parties">Parties</button>
+    </nav>
+    <button class="icon-btn" id="searchBtn" aria-label="Search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </button>
     <button class="lang-toggle" id="langToggle" aria-label="Toggle language">
       <span data-i18n="lang_button">عربي</span>
     </button>
   </header>
 
-  <!-- Search -->
-  <div class="search-wrap">
-    <input
-      type="search"
-      id="searchInput"
-      class="search-input"
-      data-i18n-placeholder="search_placeholder"
-      placeholder="Search movies and shows…"
-      autocomplete="off"
-    />
+  <!-- Search overlay -->
+  <div class="search-overlay" id="searchOverlay" hidden>
+    <div class="search-bar">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-mute)"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="search" id="searchInput" class="search-input" data-i18n-placeholder="search_placeholder" placeholder="Search movies and shows…" autocomplete="off" />
+      <button class="icon-btn" id="searchClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
   </div>
-
-  <!-- Tabs -->
-  <nav class="tabs" role="tablist">
-    <button class="tab active" data-view="discover" data-i18n="tab_discover">Discover</button>
-    <button class="tab" data-view="continue" data-i18n="tab_continue">Continue</button>
-    <button class="tab" data-view="watchlist" data-i18n="tab_watchlist">Watchlist</button>
-    <button class="tab" data-view="parties" data-i18n="tab_parties">Parties</button>
-  </nav>
 
   <!-- Main content -->
   <main id="main" class="main">
-    <div class="loading" id="loading">
-      <div class="spinner"></div>
-    </div>
+    <div class="loading"><div class="spinner"></div></div>
   </main>
 
   <!-- Detail overlay -->
@@ -61,18 +62,24 @@
   <!-- Player overlay -->
   <div class="overlay player-overlay" id="playerOverlay" hidden>
     <div class="player-wrap">
-      <iframe id="playerFrame" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe>
+      <iframe id="playerFrame"
+              allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+              allowfullscreen
+              referrerpolicy="origin"></iframe>
+    </div>
+    <div class="party-banner" id="partyBanner" hidden>
+      <span class="dot"></span><span id="partyBannerText">Watch party</span>
     </div>
   </div>
 
   <!-- Toast -->
   <div class="toast" id="toast" hidden></div>
 
-  <script src="./config.js"></script>
-  <script src="./i18n.js"></script>
-  <script src="./tmdb.js"></script>
-  <script src="./supabase-client.js"></script>
-  <script src="./watchparty.js"></script>
-  <script src="./app.js"></script>
+  <script src="./config.js?v=2"></script>
+  <script src="./i18n.js?v=2"></script>
+  <script src="./tmdb.js?v=2"></script>
+  <script src="./supabase-client.js?v=2"></script>
+  <script src="./watchparty.js?v=2"></script>
+  <script src="./app.js?v=2"></script>
 </body>
 </html>
