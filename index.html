@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>Sahra TV</title>
+<meta name="theme-color" content="#280905" />
+<link rel="stylesheet" href="./styles.css" />
+<!-- Telegram Mini App SDK (must be from telegram.org per platform rules) -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<!-- Supabase JS (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">★</span>
+      <span class="brand-name" data-i18n="brand">Sahra TV</span>
+    </div>
+    <button class="lang-toggle" id="langToggle" aria-label="Toggle language">
+      <span data-i18n="lang_button">عربي</span>
+    </button>
+  </header>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <input
+      type="search"
+      id="searchInput"
+      class="search-input"
+      data-i18n-placeholder="search_placeholder"
+      placeholder="Search movies and shows…"
+      autocomplete="off"
+    />
+  </div>
+
+  <!-- Tabs -->
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-view="discover" data-i18n="tab_discover">Discover</button>
+    <button class="tab" data-view="continue" data-i18n="tab_continue">Continue</button>
+    <button class="tab" data-view="watchlist" data-i18n="tab_watchlist">Watchlist</button>
+    <button class="tab" data-view="parties" data-i18n="tab_parties">Parties</button>
+  </nav>
+
+  <!-- Main content -->
+  <main id="main" class="main">
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+    </div>
+  </main>
+
+  <!-- Detail overlay -->
+  <div class="overlay" id="detailOverlay" hidden>
+    <div class="overlay-inner" id="detailContent"></div>
+  </div>
+
+  <!-- Player overlay -->
+  <div class="overlay player-overlay" id="playerOverlay" hidden>
+    <div class="player-wrap">
+      <iframe id="playerFrame" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="./config.js"></script>
+  <script src="./i18n.js"></script>
+  <script src="./tmdb.js"></script>
+  <script src="./supabase-client.js"></script>
+  <script src="./watchparty.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
