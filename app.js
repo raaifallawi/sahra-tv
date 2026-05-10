@@ -39,6 +39,10 @@ async function init() {
     await window.authenticateWithTelegram().catch(() => {});
   }
 
+  // Ensure a users row exists (required for FK on watchlist/progress/parties).
+  // MVP mode: relies on relaxed RLS (see backend/relax-rls.sql).
+  await ensureUserRow().catch(e => console.warn("user upsert failed", e));
+
   bindUi();
 
   // Handle deep link
@@ -476,6 +480,21 @@ function toast(msg) {
 function escapeHtml(s) {
   return String(s || "").replace(/[&<>"']/g, c =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+/* ─── Ensure a row exists in the users table for this Telegram user ─── */
+async function ensureUserRow() {
+  if (!window.SB) return;
+  const u = tg?.initDataUnsafe?.user;
+  if (!u) return;
+  await window.SB.from("users").upsert({
+    telegram_user_id: u.id,
+    username: u.username || null,
+    first_name: u.first_name || null,
+    last_name: u.last_name || null,
+    language_code: u.language_code || "en",
+    last_seen_at: new Date().toISOString(),
+  }, { onConflict: "telegram_user_id" });
 }
 
 document.addEventListener("DOMContentLoaded", init);
